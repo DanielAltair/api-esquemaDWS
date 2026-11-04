@@ -6,5 +6,4 @@ public record DepartamentoResponseDto(
     String nombre,
     String descripcion,
     String telefono
-
 ) {}
