@@ -3,12 +3,17 @@ package com.ApiEsquemaNuevo.api_esquema.services.impl;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ApiEsquemaNuevo.api_esquema.dtos.DepartamentoRequestDto;
 import com.ApiEsquemaNuevo.api_esquema.dtos.DepartamentoResponseDto;
 import com.ApiEsquemaNuevo.api_esquema.entities.Departamento;
+import com.ApiEsquemaNuevo.api_esquema.exceptions.CodigoAlreadyExistisException;
+import com.ApiEsquemaNuevo.api_esquema.exceptions.DepartamentoNotFoundException;
 import com.ApiEsquemaNuevo.api_esquema.repositories.DepartamentoRepository;
 import com.ApiEsquemaNuevo.api_esquema.services.DepartamentoService;
+
+
 
 @Service 
 public class DepartamentoServiceImpl implements DepartamentoService{
@@ -19,8 +24,13 @@ public class DepartamentoServiceImpl implements DepartamentoService{
         this.departamentoRepository = departamentoRepository;
     }
 
-    @Override 
+    @Override
+    @Transactional  
     public DepartamentoResponseDto crear(DepartamentoRequestDto datos) {
+
+        if(departamentoRepository.existsByCodigo(datos.codigo())) {
+            throw new CodigoAlreadyExistisException("Ya existe un departamento con el código: " + datos.codigo());
+        }
         
         Departamento departamento = new Departamento();
        
@@ -31,62 +41,47 @@ public class DepartamentoServiceImpl implements DepartamentoService{
 
         Departamento guardado = departamentoRepository.save(departamento);
 
-        return new DepartamentoResponseDto(
-            guardado.getIdDepartamento(),
-            guardado.getCodigo(),
-            guardado.getNombre(),
-            guardado.getDescripcion(),
-            guardado.getTelefono()
-        );
+        return mapToResponseDto(guardado);
     }
 
-    @Override 
+    @Override
+    @Transactional(readOnly = true) 
     public List<DepartamentoResponseDto> listar(){
         List<Departamento> departamentos = departamentoRepository.findAll();
         
         return departamentos.stream()
-            .map(departamento -> new DepartamentoResponseDto(
-                departamento.getIdDepartamento(),
-                departamento.getCodigo(),
-                departamento.getNombre(),
-                departamento.getDescripcion(),
-                departamento.getTelefono()
-            ))
+            .map(this::mapToResponseDto)
             .toList();
     }
 
     @Override 
+    @Transactional(readOnly = true)
     public DepartamentoResponseDto buscarPorId(Long id){
         Departamento departamento = departamentoRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Departamento no encontrado con id:" + id));
+        .orElseThrow(() -> new DepartamentoNotFoundException("Departamento no encontrado con id:" + id));
         
-        return new DepartamentoResponseDto(
-            departamento.getIdDepartamento(),
-            departamento.getCodigo(),
-            departamento.getNombre(),
-            departamento.getDescripcion(),
-            departamento.getTelefono() 
-        );
+        return mapToResponseDto(departamento);
     }
 
     @Override 
+    @Transactional(readOnly = true)
     public DepartamentoResponseDto buscarPorCodigo(String codigo){
         Departamento departamento = departamentoRepository.findByCodigo(codigo)
-        .orElseThrow(() -> new RuntimeException("Departamento no encontrado con codigo: " + codigo));
+        .orElseThrow(() -> new DepartamentoNotFoundException("Departamento no encontrado con codigo: " + codigo));
 
-        return new DepartamentoResponseDto(
-            departamento.getIdDepartamento(),
-            departamento.getCodigo(),
-            departamento.getNombre(),
-            departamento.getDescripcion(),
-            departamento.getTelefono()
-        );
+        return mapToResponseDto(departamento);
     }
 
     @Override 
+    @Transactional 
         public DepartamentoResponseDto actualizar(Long id, DepartamentoRequestDto datos){
+
             Departamento departamento = departamentoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Departamento no encontrado con id: " + id));
+            .orElseThrow(() -> new DepartamentoNotFoundException("Departamento no encontrado con id: " + id));
+
+             if(!departamento.getCodigo().equalsIgnoreCase(datos.codigo()) && departamentoRepository.existsByCodigo(datos.codigo())) {
+                throw new CodigoAlreadyExistisException("Ya existe un departamento con el código: " + datos.codigo());
+            }
 
             departamento.setCodigo(datos.codigo());
             departamento.setNombre(datos.nombre());
@@ -95,20 +90,27 @@ public class DepartamentoServiceImpl implements DepartamentoService{
 
             Departamento actualizado = departamentoRepository.save(departamento);
 
-            return new DepartamentoResponseDto(
-                actualizado.getIdDepartamento(),
-                actualizado.getCodigo(),
-                actualizado.getNombre(),
-                actualizado.getDescripcion(),
-                actualizado.getTelefono()
-            );
+            return mapToResponseDto(actualizado);
+            
         }
 
     @Override
+    @Transactional 
     public void eliminar(Long id){
         Departamento departamento = departamentoRepository.findById(id)
-        .orElseThrow(()-> new RuntimeException("Departamento no encontrado con id: " + id));
+        .orElseThrow(() -> new DepartamentoNotFoundException("Departamento no encontrado con id: " + id));
 
         departamentoRepository.delete(departamento);
+    }
+
+    private DepartamentoResponseDto mapToResponseDto(Departamento departamento){
+
+        return new DepartamentoResponseDto(
+            departamento.getIdDepartamento(),
+            departamento.getCodigo(),
+            departamento.getNombre(),
+            departamento.getDescripcion(),
+            departamento.getTelefono()
+        );
     }
 }
