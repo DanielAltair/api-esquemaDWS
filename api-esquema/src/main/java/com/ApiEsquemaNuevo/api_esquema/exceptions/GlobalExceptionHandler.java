@@ -13,14 +13,33 @@ public class GlobalExceptionHandler {
     public ProblemDetail manejarDepartamentoNoEncontrado(
             DepartamentoNotFoundException ex) {
 
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.NOT_FOUND,
-                ex.getMessage()
-        );
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,ex.getMessage());
 
         problem.setTitle("Departamento no encontrado");
         problem.setProperty("timestamp", Instant.now());
 
         return problem;
     }
-}    
+
+    @ExceptionHandler(ModuloNotFoundException.class)
+    public ProblemDetail manejarModuloNoEncontrado(ModuloNotFoundException ex) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND,ex.getMessage());
+
+        problem.setTitle("Modulo no encontrado");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+    }
+
+    @ExceptionHandler(ModuloAlreadyExistsException.class)
+    public ProblemDetail manejarModuloDuplicado(ModuloAlreadyExistsException ex) {
+
+     ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT,ex.getMessage());
+
+        problem.setTitle("Conflicto de datos");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+    }
+}       
