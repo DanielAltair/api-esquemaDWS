@@ -18,6 +18,8 @@ public interface DepartamentoService {
     DepartamentoResponseDto buscarPorCodigo(String codigo);
     //Método para actualizar un departamento.
     DepartamentoResponseDto actualizar(Long id, DepartamentoRequestDto datos);
-    //Método para eliminar un departamento.
-    void eliminar(Long id);
+    //Método para eliminar un departamento por su ID.
+    void eliminarPorId(Long id);
+    //Método para eliminar un departamento por su código.
+    void eliminarPorCodigo(String codigo);
 }

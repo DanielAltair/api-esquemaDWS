@@ -16,6 +16,8 @@ public interface  ProfesorService {
     ProfesorResponseDto buscarPorDni(String dni);
     //Método para actualizar un profesor.
     ProfesorResponseDto actualizar(Long id, ProfesorRequestDto datos);
-    //Método para eliminar un profesor.
-    void eliminar(Long id);
+    //Método para eliminar un profesor por su ID.
+    void eliminarPorId(Long id);
+    //Método para eliminar un profesor por su DNI.
+    void eliminarPorDni(String dni);
 }

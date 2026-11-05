@@ -104,8 +104,16 @@ public class ProfesorServiceImpl implements ProfesorService  {
 
     @Override
     @Transactional 
-    public void eliminar(Long id) {
+    public void eliminarPorId(Long id) {
         Profesor profesor = profesorRepository.findById(id).orElseThrow();
+
+        profesorRepository.delete(profesor);
+    }
+
+    @Override
+    @Transactional 
+    public void eliminarPorDni(String dni) {
+        Profesor profesor = profesorRepository.findByDni(dni).orElseThrow();
 
         profesorRepository.delete(profesor);
     }

@@ -96,9 +96,18 @@ public class DepartamentoServiceImpl implements DepartamentoService{
 
     @Override
     @Transactional 
-    public void eliminar(Long id){
+    public void eliminarPorId(Long id){
         Departamento departamento = departamentoRepository.findById(id)
         .orElseThrow(() -> new DepartamentoNotFoundException("Departamento no encontrado con id: " + id));
+
+        departamentoRepository.delete(departamento);
+    }
+
+    @Override
+    @Transactional 
+    public void eliminarPorCodigo(String codigo){
+        Departamento departamento = departamentoRepository.findByCodigo(codigo)
+        .orElseThrow(() -> new DepartamentoNotFoundException("Departamento no encontrado con codigo: " + codigo));
 
         departamentoRepository.delete(departamento);
     }

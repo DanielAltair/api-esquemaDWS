@@ -56,8 +56,14 @@ public class DepartamentoController {
         }
 
     @DeleteMapping ("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id){
-        departamentoService.eliminar(id);
+    public ResponseEntity<Void> eliminarPorId(@PathVariable Long id){
+        departamentoService.eliminarPorId(id);
+        return ResponseEntity.noContent().build();
+    }
+
+     @DeleteMapping ("/codigo/{codigo}")
+    public ResponseEntity<Void> eliminarPorCodigo(@PathVariable String codigo){
+        departamentoService.eliminarPorCodigo(codigo);
         return ResponseEntity.noContent().build();
     }
 }
