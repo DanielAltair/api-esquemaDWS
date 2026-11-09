@@ -55,15 +55,17 @@ public class CursoServiceImpl implements CursoService {
     @Override
     @Transactional (readOnly = true)
     public CursoResponseDto buscarPorDiminutivo(String diminutivo) {
-        // TODO Auto-generated method stub
-        return null;
+        Curso curso = cursoRepository.findByDiminutivo(diminutivo).orElseThrow();
+
+        return mapToResponseDto(curso);
     }
 
     @Override
     @Transactional (readOnly = true)
     public CursoResponseDto buscarPorID(Long id) {
-        // TODO Auto-generated method stub
-        return null;
+        Curso curso = cursoRepository.findById(id).orElseThrow();
+
+        return mapToResponseDto(curso);
     }
 
     @Override
@@ -91,22 +93,31 @@ public class CursoServiceImpl implements CursoService {
     }
 
     @Override
+    @Transactional 
     public void eliminarPorDiminutivo(String diminutivo) {
-        // TODO Auto-generated method stub
+        Curso curso = cursoRepository.findByDiminutivo(diminutivo).orElseThrow();
+
+        cursoRepository.delete(curso);
         
     }
 
     @Override
+    @Transactional 
     public void eliminarPorId(Long id) {
-        // TODO Auto-generated method stub
+        Curso curso = cursoRepository.findById(id).orElseThrow();
+
+        cursoRepository.delete(curso);
         
     }
 
     @Override
     @Transactional (readOnly = true)
     public List<CursoResponseDto> listar() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Curso> curso = cursoRepository.findAll();
+
+        return curso.stream()
+        .map(this::mapToResponseDto)
+        .toList();
     }
 
     private CursoResponseDto mapToResponseDto(Curso curso){
