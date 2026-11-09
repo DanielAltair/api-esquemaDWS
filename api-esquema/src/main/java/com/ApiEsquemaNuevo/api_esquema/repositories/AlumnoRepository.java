@@ -19,5 +19,5 @@ public interface AlumnoRepository extends JpaRepository<Alumno, Long>{
 
     //Eliminar por UK
     void deleteByDni(String dni);
-    void deleteByDniNumeroSS(Integer numeroSS);
+    void deleteByNumeroSS(Integer numeroSS);
 }

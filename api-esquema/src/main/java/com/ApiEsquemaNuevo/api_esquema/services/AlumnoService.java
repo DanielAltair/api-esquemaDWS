@@ -19,7 +19,9 @@ public interface AlumnoService {
     //Método para buscar por numeroSS.
     AlumnoResponseDto buscarPorNumeroSS(Integer numeroSS);
     //Método para eliminar por id.
-    AlumnoResponseDto eliminarPorId(Long id);
+    void  eliminarPorId(Long id);
     //Método para eliminar por numeroSS.
-    AlumnoResponseDto eliminarPorNumeroSS(Integer numeroSS);
+    void  eliminarPorNumeroSS(Integer numeroSS);
+    //Método para eliminar por dni.
+    void  eliminarPorDni(String dni);
 }
